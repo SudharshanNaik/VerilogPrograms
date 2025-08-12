@@ -62,7 +62,7 @@ endmodule
 
 
 
-/*Build a combinational circuit with four inputs, in[3:0].
+/*5.Build a combinational circuit with four inputs, in[3:0].
 
 There are 3 outputs:
 
