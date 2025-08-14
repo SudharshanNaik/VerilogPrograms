@@ -83,3 +83,63 @@ assign out_and=&in;
 endmodule
 
 
+//Given several input vectors, concatenate them together then split them up into several output vectors. There are six 5-bit input vectors: a, b, c, d, e, and f, for a total of 30 bits of input. There are four 8-bit output vectors: w, x, y, and z, for 32 bits of output. The output should be a concatenation of the input vectors followed by two 1 bits:
+
+module top_module (
+    input [4:0] a, b, c, d, e, f,
+    output [7:0] w, x, y, z );//
+
+    assign { w,x,y,z } = {a,b,c,d,e,f,2'b11};
+
+endmodule
+
+
+//Given an 8-bit input vector [7:0], reverse its bit ordering.
+
+module top_module( 
+    input [7:0] in,
+    output [7:0] out
+);
+   //assign out={in[0],in[1],in[2],in[3],in[4],in[5],in[6],in[7]};
+
+always @(*) begin	
+		for (int i=0; i<8; i++)	// int is a SystemVerilog type. Use integer for pure Verilog.
+			out[i] = in[8-i-1];
+	end
+    endmodule
+
+
+    /*One common place to see a replication operator is when sign-extending a smaller number to a larger one, while preserving its signed value. This is done by replicating the sign bit (the most significant bit) of the smaller number to the left. For example, sign-extending 4'b0101 (5) to 8 bits results in 8'b00000101 (5), while sign-extending 4'b1101 (-3) to 8 bits results in 8'b11111101 (-3).
+
+Build a circuit that sign-extends an 8-bit number to 32 bits. This requires a concatenation of 24 copies of the sign bit (i.e., replicate bit[7] 24 times) followed by the 8-bit number itself.*/
+
+module top_module (
+    input [7:0] in,
+    output [31:0] out );//
+
+    assign out = {{24{in[7]}},{in[7:0]}};
+
+endmodule
+
+
+/*Given five 1-bit signals (a, b, c, d, and e), compute all 25 pairwise one-bit comparisons in the 25-bit output vector. The output should be 1 if the two bits being compared are equal.
+
+out[24] = ~a ^ a;   // a == a, so out[24] is always 1.
+out[23] = ~a ^ b;
+out[22] = ~a ^ c;
+...
+out[ 1] = ~e ^ d;
+out[ 0] = ~e ^ e;
+*/
+
+module top_module (
+    input a, b, c, d, e,
+    output [24:0] out );//
+
+    // The output is XNOR of two vectors created by 
+    // concatenating and replicating the five inputs.
+    wire [24:0]top={{5{a}},{5{b}},{5{c}},{5{d}},{5{e}}};
+                    wire [24:0] botom={5{a,b,c,d,e}};
+    assign out = ~(top^botom);
+
+endmodule
